@@ -30,12 +30,29 @@ class Board
         other_cells_in_col << r[col]
       end
     end
-    # p other_cells_in_col
     other_cells_in_col.include?(1) ? true : false
-    # if up.include?(1) || down.nil? || down.include?(1)
-    #   return true
-    # end
-    # false
+  end
+
+  def other_queen_in_any_diag?(row, col)
+    a = other_queen_in_diag?(row, col, 1, 1)
+    b = other_queen_in_diag?(row, col, 1, -1)
+    c = other_queen_in_diag?(row, col, -1, -1)
+    d = other_queen_in_diag?(row, col, -1, 1)
+    a || b || c || d
+  end
+
+  def other_queen_in_diag?(row, col, rowdir, coldir)
+    next_row = row + rowdir
+    next_col = col + coldir
+    # p "#{next_row}, #{next_col}"
+    if next_row < 0 || next_row >= @grid.length
+      return false
+    end
+    if next_col < 0 || next_col >= @grid.length
+      return false
+    end
+    return true if @grid[next_row][next_col] == 1
+    other_queen_in_diag?(next_row, next_col, rowdir, coldir)
   end
 
   def render
@@ -56,9 +73,9 @@ x = Board.new
 # x.insert_queen(2, 5)
 # x.insert_queen(0, 5)
 x.insert_queen(1, 5)
-x.insert_queen(3, 5)
-p x.other_queen_in_col?(1, 5)
-# x.render
+x.insert_queen(3, 3)
+p x.other_queen_in_any_diag?(1, 5)
+x.render
 
 if $PROGRAM_NAME == __FILE__
   puts "stuff"
