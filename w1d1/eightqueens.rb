@@ -151,7 +151,7 @@ class Algorithm
   #
   # end
 
-  def solve
+  # def solve
     #starting with empty board
     #place a queen at leftmost, non-attempted spot
     #record this attempt as [0]
@@ -177,12 +177,12 @@ class Algorithm
     #[0, 3, 1]
     #[0, 3, 1]
 
-  end
+  # end
 
   #input: array of cols. negative one means no queen in row
   #output: board with queens placed
 
-  def array_to_queen_locations(arr, board_size = 5)
+  def array_to_board(arr, board_size = 5)
     board = Board.new(board_size)
     arr.each_with_index do |col, row|
       if col >= 0
@@ -193,7 +193,7 @@ class Algorithm
     board
   end
 
-  def queen_locations_to_array(board)
+  def board_to_array(board)
     arr = []
     board.grid.each do |row|
       flag = false #to keep track of a queen placed in row. false = no queen
@@ -203,21 +203,49 @@ class Algorithm
           flag = true #queen placed in row
         end
         next if flag
-        if col == row.length - 1 && flag == false
-          arr << -1
-        end
+        # if col == row.length - 1 && flag == false
+        #   arr << -1
+        # end
       end
     end
     arr
   end
 
+  def solve(board)
+    next_queen_pos = next_iter(board)
+    if next_queen_pos.nil?
+      board = backtrack(board, board.grid.length-1)
+    else
+      board.insert_queen(next_queen_pos[0], next_queen_pos[1])
+    end
+    board.render
+    board
+  end
+
+  def backtrack(board, row)
+    arr = board_to_array(board)
+    byebug
+    value = arr.pop
+    board = array_to_board(arr)
+    if next_untested_column(arr, row, value + 1).nil?
+      backtrack(board, row - 1)
+    end
+    return board
+    # next_untested_column(arr, row, value)
+    # #get the last rows queen col
+    # previous_row_queen_col = arr.last
+  end
+
   def next_iter(board, start_col = 0)
-    arr = queen_locations_to_array(board)
+    arr = board_to_array(board)
     # board = array_to_queen_locations(arr)
     next_row = next_row_without_queen(arr)
     # byebug if next_row.nil?
-    backtrack_until_additional_starting_col(arr,arr.length) if next_row.nil?
+    return nil if next_row.nil?
+    # backtrack_until_additional_starting_col(arr,arr.length) if next_row.nil?
+
     next_col = next_untested_column(arr, next_row, start_col)
+    return [next_row, next_col]
     # previous_iter(arr) if next_col.nil?
     # byebug
     # if next_row.nil? && arr.length == board.grid.length#there are no empty rows
@@ -230,8 +258,8 @@ class Algorithm
     #   previous_iter(arr)
     # end
 
-    board.insert_queen(next_row, next_col)
-    board
+    # board.insert_queen(next_row, next_col)
+    # board
   end
 
   def next_untested_column(arr, row, start_col)
@@ -243,25 +271,25 @@ class Algorithm
     arr.index(-1)
   end
 
-  def backtrack_until_additional_starting_col(arr, start_row)
-    byebug
-    board = array_to_queen_locations(arr)
-    row = start_row
-    # col = board[row].index(1)
-    while next_col.nil?
-      row -= 1
-      col = board.grid[row].index(1) + 1
-      next_col = find_next_possible_queen_placements_on_row(board, row, col)
-    end
-    next_col
-  end
+  # def backtrack_until_additional_starting_col(arr, start_row)
+  #   byebug
+  #   board = array_to_queen_locations(arr)
+  #   row = start_row
+  #   # col = board[row].index(1)
+  #   while next_col.nil?
+  #     row -= 1
+  #     col = board.grid[row].index(1) + 1
+  #     next_col = find_next_possible_queen_placements_on_row(board, row, col)
+  #   end
+  #   next_col
+  # end
 
-  def previous_iter(arr)
-    byebug
-    start_col = arr.pop + 1
-    board = array_to_queen_locations(arr)
-    next_iter(board, start_col)
-  end
+  # def previous_iter(arr)
+  #   byebug
+  #   start_col = arr.pop + 1
+  #   board = array_to_queen_locations(arr)
+  #   next_iter(board, start_col)
+  # end
 
   #input: row number
   #scans board for other queens to reject cols that have a queen attached
@@ -289,18 +317,14 @@ end
 solver = Algorithm.new
 # solver.board.render
 empty_board = Board.new
-board = solver.next_iter(empty_board)
-board.render
-solver.next_iter(board)
-board.render
-solver.next_iter(board)
-board.render
-solver.next_iter(board)
-board.render
-solver.next_iter(board)
-board.render
-solver.next_iter(board)
-board.render
+b = solver.solve(empty_board)
+b = solver.solve(b)
+b.render
+b = solver.solve(b)
+b = solver.solve(b)
+b = solver.solve(b)
+b = solver.solve(b)
+
 
 
 # board.render
