@@ -1,108 +1,5 @@
 require 'byebug'
-class Board
-  attr_accessor :grid, :queen_locations
-  def initialize(size = 5)
-    @queen_locations = []
-    @grid = []
-    @h = {}
-    # default_size = 5
-    size.times do
-      @grid << Array.new(size, 0)
-    end
-  end
-
-  def insert_queen(row, col)
-    @queen_locations << [row, col]
-    @grid[row][col] = 1
-  end
-
-  #specify the row and column of the queen, then this will return true
-  #if there's another one.
-  def other_queen_in_row?(row, col)
-    left = @grid[row][0, col]
-    right = @grid[row][col + 1..-1]
-    if left.include?(1) || right.nil? || right.include?(1)
-      return true
-    end
-    false
-  end
-
-  def other_queen_in_col?(row, col)
-    other_cells_in_col = []
-    @grid.each_with_index do |r, i|
-      if row != i
-        other_cells_in_col << r[col]
-      end
-    end
-    other_cells_in_col.include?(1) ? true : false
-  end
-
-  def other_queen_in_any_diag?(row, col)
-    a = other_queen_in_diag?(row, col, 1, 1)
-    b = other_queen_in_diag?(row, col, 1, -1)
-    c = other_queen_in_diag?(row, col, -1, -1)
-    d = other_queen_in_diag?(row, col, -1, 1)
-    a || b || c || d
-  end
-
-  def other_queen_in_diag?(row, col, rowdir, coldir)
-    next_row = row + rowdir
-    next_col = col + coldir
-    # p "#{next_row}, #{next_col}"
-    if next_row < 0 || next_row >= @grid.length
-      return false
-    end
-    if next_col < 0 || next_col >= @grid.length
-      return false
-    end
-    return true if @grid[next_row][next_col] == 1
-    other_queen_in_diag?(next_row, next_col, rowdir, coldir)
-  end
-
-  def other_queen_in_any_direction?(row, col)
-    a = other_queen_in_any_diag?(row, col)
-    b = other_queen_in_col?(row, col)
-    c = other_queen_in_row?(row, col)
-    a || b || c
-  end
-
-  def check_solution
-    @queen_locations.each do |pos|
-      row = pos[0]
-      col = pos[1]
-      return false if other_queen_in_any_direction?(row, col)
-    end
-    true
-  end
-
-  def render_chessboard
-    print " "
-    ('a'..'h').to_a.each do |l|
-      print " " + l + " "
-    end
-    print "\n"
-    i = 8
-    @grid.each do |row|
-      print i
-      p row
-      i -= 1
-    end
-  end
-
-  def render
-    print " "
-    (0...@grid.length).to_a.each do |l|
-      print " " + l.to_s + " "
-    end
-    print "\n"
-    i = 0
-    @grid.each do |row|
-      print i
-      p row
-      i += 1
-    end
-  end
-end
+require_relative 'chessboard'
 
 '''
 8 queens and 8 rows means there MUST be one queen on every row. If
@@ -127,31 +24,6 @@ class Algorithm
     @solutions = []
   end
 
-  # def solve_helper(row = 0, board = Board.new)
-  #   if row == @board.grid.length
-  #     @solutions << @board
-  #     solve(0)
-  #   end
-  #   possible_cols = find_possible_queen_placements_on_row(row)
-  #   solution_space << possible_cols
-  #   while !solution_space.empty?
-  #     @board.insert_queen(row, possible_cols.pop)
-  #     solve(row + 1, board)
-  #   end
-    # @board.insert_queen(row, possible_cols[0])
-    # #take snapshot of board state?
-    # # row += 1
-    # solve(row + 1)
-    # @board.render
-  # end
-
-  # def solve(row = 0, queens = 8)
-  #   @board.insert_queen(row, pick_col)
-  #   solve(row + 1, queens - 1)
-  #
-  # end
-
-  # def solve
     #starting with empty board
     #place a queen at leftmost, non-attempted spot
     #record this attempt as [0]
@@ -176,8 +48,6 @@ class Algorithm
     #[0, 3]
     #[0, 3, 1]
     #[0, 3, 1]
-
-  # end
 
   #input: array of cols. negative one means no queen in row
   #output: board with queens placed
@@ -224,7 +94,6 @@ class Algorithm
 
   def backtrack(board, row)
     arr = board_to_array(board)
-    byebug
     value = arr.pop
     board = array_to_board(arr)
     if next_untested_column(arr, row, value + 1).nil?
@@ -238,28 +107,10 @@ class Algorithm
 
   def next_iter(board, start_col = 0)
     arr = board_to_array(board)
-    # board = array_to_queen_locations(arr)
     next_row = next_row_without_queen(arr)
-    # byebug if next_row.nil?
     return nil if next_row.nil?
-    # backtrack_until_additional_starting_col(arr,arr.length) if next_row.nil?
-
     next_col = next_untested_column(arr, next_row, start_col)
     return [next_row, next_col]
-    # previous_iter(arr) if next_col.nil?
-    # byebug
-    # if next_row.nil? && arr.length == board.grid.length#there are no empty rows
-    #   p "DONE"
-    #   @solutions << arr
-    #   previous_iter(arr)
-    # end
-    # next_col = find_next_possible_queen_placements_on_row(board, next_row, start_col)
-    # if next_col.nil?
-    #   previous_iter(arr)
-    # end
-
-    # board.insert_queen(next_row, next_col)
-    # board
   end
 
   def next_untested_column(arr, row, start_col)
@@ -270,26 +121,6 @@ class Algorithm
   def next_row_without_queen(arr)
     arr.index(-1)
   end
-
-  # def backtrack_until_additional_starting_col(arr, start_row)
-  #   byebug
-  #   board = array_to_queen_locations(arr)
-  #   row = start_row
-  #   # col = board[row].index(1)
-  #   while next_col.nil?
-  #     row -= 1
-  #     col = board.grid[row].index(1) + 1
-  #     next_col = find_next_possible_queen_placements_on_row(board, row, col)
-  #   end
-  #   next_col
-  # end
-
-  # def previous_iter(arr)
-  #   byebug
-  #   start_col = arr.pop + 1
-  #   board = array_to_queen_locations(arr)
-  #   next_iter(board, start_col)
-  # end
 
   #input: row number
   #scans board for other queens to reject cols that have a queen attached
@@ -320,7 +151,6 @@ empty_board = Board.new
 b = solver.solve(empty_board)
 b = solver.solve(b)
 b.render
-b = solver.solve(b)
 b = solver.solve(b)
 b = solver.solve(b)
 b = solver.solve(b)

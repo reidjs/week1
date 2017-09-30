@@ -34,6 +34,7 @@ end
 
 
 
+
 #create a method that will take every index of the string and apply the relevent
 #operation, like remove, insert, etc.
 
