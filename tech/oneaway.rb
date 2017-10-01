@@ -2,7 +2,39 @@
 #0 or 1 edit away from a desired result
 
 require 'byebug'
+def oneaway(string, desired = "pale")
+  remove = Proc.new do |str, idx|
+    str[idx] = ""
+    str
+  end
 
+  replace = Proc.new do |str, idx, l|
+    str[idx] = l if idx < str.length
+    str
+  end
+
+  insert = Proc.new do |str, idx, l|
+    idx <= str.length ? str.insert(idx, l) : str << l
+    str
+  end
+
+  i = 0
+  while i <= string.length
+    return true if check_string(remove.call(string.dup, i))
+    each_letter do |l|
+      return true if check_string(replace.call(string.dup, i, l), desired)
+      return true if check_string(insert.call(string.dup, i, l), desired)
+    end
+    i += 1
+  end
+  false
+end
+
+p oneaway("palezd", "pale")
+
+"""
+UNUSED FUNCTIONS
+"""
 def remove(str, idx)
   str = str.dup
   str[idx] = ""
@@ -107,35 +139,7 @@ end
 # end
 
 
-def oneaway(string, desired = "pale")
-  remove = Proc.new do |str, idx|
-    str[idx] = ""
-    str
-  end
 
-  replace = Proc.new do |str, idx, l|
-    str[idx] = l if idx < str.length
-    str
-  end
-
-  insert = Proc.new do |str, idx, l|
-    idx <= str.length ? str.insert(idx, l) : str << l
-    str
-  end
-
-  i = 0
-  while i <= string.length
-    return true if check_string(remove.call(string.dup, i))
-    each_letter do |l|
-      return true if check_string(replace.call(string.dup, i, l), desired)
-      return true if check_string(insert.call(string.dup, i, l), desired)
-    end
-    i += 1
-  end
-  false
-end
-
-p oneaway("palezd", "pale")
 
 
 #
