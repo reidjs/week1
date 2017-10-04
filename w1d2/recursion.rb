@@ -6,7 +6,7 @@ def sum_to(n)
   return n if n == 0
   return nil if n < 0
   n += sum_to(n-1)
-end
+end 
 
 # sum_to Test Cases
 p sum_to(5) == 15 # => returns 15
