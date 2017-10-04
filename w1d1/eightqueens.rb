@@ -2,7 +2,7 @@ require 'byebug'
 require_relative 'chessboard'
 
 '''
-8 queens and 8 rows means there MUST be one queen on every row. If
+8 queens and 8 rows means there MUST be one queen on every row and every column. If
 1. Place a queen at a starting position
 This blocks off the rows and columns associated with that starting position so the field of possibilities is smaller
 2. Go to the next row
@@ -156,18 +156,6 @@ b = solver.solve(b)
 b = solver.solve(b)
 
 
-
-# board.render
-# solver.solve
-# solver.board.render
-# x.insert_queen(2, 5)
-# x.insert_queen(0, 5)
-# x.insert_queen(5, 5)
-# x.insert_queen(6, 7)
-# x.insert_queen(0, 4)
-# # p x.other_queen_in_any_diag?(1, 5)
-# x.render
-# p x.check_solution
 
 if $PROGRAM_NAME == __FILE__
   puts "stuff"
