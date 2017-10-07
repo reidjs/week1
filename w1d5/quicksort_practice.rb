@@ -12,7 +12,7 @@ def quicksort(arr, &prc)
     right << arr[index] if (arr[index] >= arr[pivot_idx])
   end
 
-  byebug
+  # byebug
   # left = arr[1..-1].select{ |el| (prc.call(el, pivot) < 0) }
   # right = arr[1..-1].select{ |el| prc.call(el, pivot) > 0 }
   quicksort(left) + [arr[pivot_idx]] + quicksort(right)
