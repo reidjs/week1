@@ -40,10 +40,14 @@ class MinesweeperGame
   end
 
   def get_position
-    gets.chomp.split(",").map(&:to_i)
+    input = gets.chomp.split(",").map(&:to_i)
+    # p input
+    input
   end
 
   def valid_position?(pos)
+    return false if pos.length != 2
+    # return false if !pos.is_a?(Array)
     return true unless @board[pos] == false ||
       @board[pos].revealed
     false
