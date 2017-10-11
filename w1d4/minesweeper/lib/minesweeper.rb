@@ -18,7 +18,9 @@ class MinesweeperGame
       pos = get_position
       @board.render
       # selected_tile = @board[pos]
-      @board.reveal(pos)
+      if @board.check_at_cursor_position
+        @board.reveal(pos)
+      end
       #mine check is handled by the board
       # if @board.is_mine?(selected_tile)
       #   @board.mine_found!
@@ -35,7 +37,7 @@ class MinesweeperGame
   end
 
   def win?
-    @turn_count == 4
+    # @turn_count == 30
   end
 
   def lose?
@@ -47,6 +49,10 @@ class MinesweeperGame
     # p input
     # input
     @board.get_position
+  end
+
+  def populate_mines
+    @board.populate_mines
   end
 
 

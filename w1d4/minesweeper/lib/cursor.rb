@@ -32,14 +32,16 @@ MOVES = {
 
 class Cursor
 
-  attr_reader :cursor_pos, :board
+  attr_reader :cursor_pos, :board, :enter_key_pressed
 
   def initialize(cursor_pos, board)
     @cursor_pos = cursor_pos
     @board = board
+    @enter_key_pressed = false
   end
 
   def get_input
+    @enter_key_pressed = false 
     key = KEYMAP[read_char]
     handle_key(key)
   end
@@ -81,8 +83,14 @@ class Cursor
       update_pos(MOVES[key])
     when :down
       update_pos(MOVES[key])
+    when :left
+      update_pos(MOVES[key])
+    when :right
+      update_pos(MOVES[key])
     when :escape
       force_quit!
+    when :return
+      @enter_key_pressed = true
     else
       return
     end

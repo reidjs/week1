@@ -107,6 +107,10 @@ class Board
     # row, col = pos
     self[pos].value == 'X'
   end
+  def check_at_cursor_position
+    @display.enter_key_pressed
+    # @cursor.enter_key_pressed
+  end
 
   def bomb_revealed?
     @bomb_revealed
@@ -121,7 +125,7 @@ class Board
   end
 
   def force_quit!
-    @bomb_revealed = true 
+    @bomb_revealed = true
   end
 
 end
@@ -133,6 +137,10 @@ class Display
   def initialize(board)
     @board = board
     @cursor = Cursor.new([0,0], board)
+  end
+
+  def enter_key_pressed
+    @cursor.enter_key_pressed
   end
 
   def render
