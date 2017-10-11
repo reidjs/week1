@@ -81,11 +81,35 @@ class Cursor
       update_pos(MOVES[key])
     when :down
       update_pos(MOVES[key])
+    when :escape
+      force_quit!
     else
       return
     end
   end
 
-  def update_pos(diff)
+  def force_quit!
+    @board.force_quit!
   end
+
+  def update_pos(diff)
+    @cursor_pos
+    i = 0
+    result = []
+    while i < @cursor_pos.length
+      result << @cursor_pos[i] + diff[i]
+      i += 1
+    end
+    if valid_position?(result)
+      @cursor_pos = result
+    else
+      @cursor_pos
+    end
+  end
+
+  def valid_position?(pos)
+    @board.valid_position?(pos)
+  end
+
+
 end
