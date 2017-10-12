@@ -9,7 +9,7 @@ class Board
   def initialize(grid = self.create_grid)
     @grid = grid
     @bomb_revealed = false
-    @number_of_mines = 1
+    @number_of_mines = 6
     @display = Display.new(self)
     # @cursor = Cursor.new([0,0], self)
   end
@@ -22,12 +22,22 @@ class Board
     row, col = pos
     if !is_mine?(pos)
       neighbor_mines = count_neighbor_mines(pos)
-      @grid[row][col].reveal(neighbor_mines)
+      # @grid[pos].reveal(neighbor_mines)
+      self[pos].reveal(neighbor_mines)
     else
       mine_found!
+      byebug
       @grid[row][col].reveal(neighbor_mines)
+      # @self[pos].reveal(neighbor_mines)
     end
     true
+  end
+
+  def [](pos)
+    row, col = pos
+    value = @grid[row][col]
+    # value
+    value.nil? ? false : value
   end
 
   def valid_position?(pos)
@@ -73,10 +83,7 @@ class Board
     mine_positions
   end
 
-  def [](pos)
-    value = @grid[pos[0]][pos[1]]
-    value.nil? ? false : value
-  end
+
 
   def []=(pos, value)
     @grid[pos[0]][pos[1]].value = value
